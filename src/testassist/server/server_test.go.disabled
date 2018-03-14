@@ -1,0 +1,27 @@
+package testassist
+
+import (
+	"net/http"
+	"testing"
+)
+
+// Test that our dummy server delivers a testable byte stream
+func TestDummyServer(t *testing.T) {
+	//start a test server
+	t.Log("Starting dummy server")
+	DummyServerStart(t)
+	t.Log("Started dummy server")
+
+	// get the Bytes (not worried about timeouts in the request as we have a timeout trap wrapper)
+	if response, err := http.Get("http://localhost:8000/"); err != nil {
+		t.Error("Failed to retrieve dummy data: " + err.Error())
+	} else {
+		var testBytes []byte
+		t.Log("Retreiving test bytes")
+		response.Body.Read(testBytes)
+
+		if !CompareBytes(testBytes) {
+			t.Error("Dummy server didn't return proper Dummy Bytes")
+		}
+	}
+}

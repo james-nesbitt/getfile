@@ -1,0 +1,18 @@
+[submodule "vendor/github.com/sirupsen/logrus"]
+	path = vendor/github.com/sirupsen/logrus
+	url = https://github.com/sirupsen/logrus.git
+[submodule "src/github.com/sirupsen/logrus"]
+	path = src/github.com/sirupsen/logrus
+	url = https://github.com/sirupsen/logrus.git
+[submodule "src/vendor/github.com/sirupsen/logrus"]
+	path = src/vendor/github.com/sirupsen/logrus
+	url = https://github.com/sirupsen/logrus.git
+[submodule "src/getfile/vendor/github.com/sirupsen/logrus"]
+	path = src/getfile/vendor/github.com/sirupsen/logrus
+	url = https://github.com/sirupsen/logrus.git
+[submodule "vendor/github.com/urfave/cli"]
+	path = vendor/github.com/urfave/cli
+	url = https://github.com/urfave/cli.git
+[submodule "src/vendor/github.com/urfave/cli"]
+	path = src/vendor/github.com/urfave/cli
+	url = https://github.com/urfave/cli.git
