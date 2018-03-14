@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"sync"
+	"context"
 )
 
 // A Struct that can be used to retrieve files in parts
@@ -29,7 +31,7 @@ func (g *GetFile) Meta() (FileMeta, error) {
 
 // GetPieces
 // @NOTE does not do any validation on filesize
-func (g *GetFile) Pieces(num, size int) (io.Reader, error) {
+func (g *GetFile) Pieces(ctx context.Context,num, size int) (io.Reader, error) {
 	var wg sync.WaitGroup
 
 	pieces := NewFilePieces(num) // a place to keep all of the downloaded pieces
@@ -61,8 +63,14 @@ func (g *GetFile) Pieces(num, size int) (io.Reader, error) {
 		done <- true
 	}()
 
-	// now wait for done or an error
+	// now wait for done or an error/context end
 	select {
+	case <- ctx.Done():
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		} else {
+			return nil, errors.New("limiting context ended")
+		}
 	case err := <-gErr:
 		return nil, err
 	case <-done:

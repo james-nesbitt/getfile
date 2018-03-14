@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"testing"
+	"context"
 )
 
 /**
@@ -35,7 +36,7 @@ func TestGetFile(t *testing.T) {
 
 		t.Log("Length: ", l)
 
-		if pr, err := gf.Pieces(COUNT, SIZE); err != nil {
+		if pr, err := gf.Pieces(context.Background(), COUNT, SIZE); err != nil {
 			t.Error("failed to get file pieces: ", err.Error())
 		} else if bs, err := ioutil.ReadAll(pr); err != nil {
 			t.Error("Failed to read bytes: ", err.Error())
