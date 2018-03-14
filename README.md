@@ -2,7 +2,7 @@
 
 Skill-testing demo for retrieving a remote URL in pieces.
 
-see INSTRUCTIONS.md for more details on the requirements.
+see REQUIREMENTS.md for more details on the requirements.
 
 ## Methodology
 
