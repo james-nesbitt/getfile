@@ -1,4 +1,4 @@
-BUILDING Instructions
+# BUILDING Instructions
 
 there are 3 options for building:
 

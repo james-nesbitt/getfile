@@ -9,11 +9,12 @@ import (
 )
 
 // A Struct that can be used to retrieve files in parts
+// @TODO this doesn't need to be public, as we have a public constructor
 type GetFile struct {
-	// target file path, expected to be a URL
-	source string
+	source string // target file path, expected to be a URL
 }
 
+// NewGetFile constructor for a GetFile
 func NewGetFile(source string) *GetFile {
 	return &GetFile{
 		source: source,
@@ -31,8 +32,10 @@ func (g *GetFile) Meta() (FileMeta, error) {
 func (g *GetFile) Pieces(num, size int) (io.Reader, error) {
 	var wg sync.WaitGroup
 
-	pieces := NewFilePieces(num)
-	gErr := make(chan error)
+	pieces := NewFilePieces(num) // a place to keep all of the downloaded pieces
+	gErr := make(chan error)     // a global error signal handler
+
+	// for each piece, run a parallel retrieval, trigger a global error if needed.
 	for i := 0; i < num; i++ {
 		wg.Add(1)
 
@@ -51,12 +54,14 @@ func (g *GetFile) Pieces(num, size int) (io.Reader, error) {
 		}(min, max, i)
 	}
 
+	// use a finished chan to track when all of the parrallel requests are completed.
 	done := make(chan bool)
 	go func() {
 		wg.Wait()
 		done <- true
 	}()
 
+	// now wait for done or an error
 	select {
 	case err := <-gErr:
 		return nil, err
@@ -65,9 +70,12 @@ func (g *GetFile) Pieces(num, size int) (io.Reader, error) {
 	}
 }
 
-// GetPiece returns a piece of a file download from the source
-// I considered using an io.Reader, but it provides no advantage over a byte array, as the response Body needs closing
-// This should be safe for parrallel usage, as each client is independent
+/**
+ * GetPiece retrieves a piece of a file download from the source
+ *
+ * I considered read into an io.Reader, but it provides no advantage, as the response Body needs closing
+ * This is intended to be safe for parrallel usage, as each http.client is independent
+ */
 func (g *GetFile) Piece(min, max int) ([]byte, error) {
 	client := &http.Client{}
 

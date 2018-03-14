@@ -6,7 +6,13 @@ import (
 	"testing"
 )
 
-// Basic testing of FilePieces functionality
+/**
+ * As FilePieces is considered one our our risky structs, we emphasize it for testing.
+ *
+ * As a struct it needs to handle concurrency, and should be able fault and memory tolerant.
+ */
+
+// Basic testing of FilePieces functionality - add local bytes, and retrieve them
 func TestFilePieces(t *testing.T) {
 	p := NewFilePieces(10)
 
