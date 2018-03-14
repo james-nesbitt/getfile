@@ -13,30 +13,39 @@ import (
 	"github.com/urfave/cli"
 )
 
-var url string
-var name string
+var url string  // url (http) to the source file
+var name string // file name for the destination (later we choose a dir)
 
-var limit int
-var size int
+var limit int // how many pieces to download
+var size int  // how big (in bytes) each piece should be
 
-var wd string
+var wd string // what path to download the file to
 
 const (
 	TEST_URL  = "http://4ca5b8f6.bwtest-aws.pravala.com/384MB.jar"
 	TEST_NAME = "384.jar" // file name for downloaded files
 )
 
+// Init the program
 func init() {
 	wd, _ = os.Getwd() // put any downloaded files into the pwd
 }
 
+// main exec function
 func main() {
+	/**
+	 * use urfave/cli to set up the cli
+	 */
+
 	app := cli.NewApp()
 	app.Name = "getfile"
 	app.Usage = "Use this command to partially download a file over http, in pieces"
 	app.Version = VERSION
 
+	// @NOTE it would be nice if urfave/cli did something with this
 	app.ArgsUsage = "{url} : http path to file to be downloaded"
+
+	// use flags for the configuration, and attach them directly to the variables
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "file, f",
@@ -97,7 +106,7 @@ func getfile(url string, file string, limit int, size int) error {
 		}
 	}
 
-	// test if we like the contents
+	// test if we like the contents: make sure we made a file, and output an md5 for the user
 	if f, err := os.Open(file); err != nil {
 		log.WithError(err).Error("Couldn't open new file")
 		return err
