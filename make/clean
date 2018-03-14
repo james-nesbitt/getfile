@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Cleans out build results
+#
+# This just removes the build target folder
+#
+
+echo "  --> Cleaning by removing build : ${BUILD_BINARY_PATH}"
+
+# Get rid of existing binary
+rm -f "${BUILD_BINARY_PATH}"

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+# Here we flesh out the gitsubmodules, if they haven't
+# already been done.
+# If this is in build.sh, then these updates occur only
+# inside the container, and don't add to the FS, but
+# locally this will add all of the submodule files to
+# the vendor path.
+#
+
+echo "  --> updating vendor dependencies [recursively]"
+
+(
+	git submodule update --force --init --recursive
+)
+
+# @HACK the build currently fails in a dockerized build without this
+(
+  go get golang.org/x/crypto/ssh/terminal
+)
+
+echo "  --- Finished dependency update"

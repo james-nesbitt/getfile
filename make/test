@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+(
+    echo "---> Running tests in $GO_TARGET"
+    cd "$GO_TARGET"
+
+    {
+        go test ./...
+        echo "tested : PASS"
+
+    } || { # catch
+        echo "tested : FAIL"
+    }
+
+)
