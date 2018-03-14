@@ -21,9 +21,10 @@ import (
 const URL = "http://4ca5b8f6.bwtest-aws.pravala.com/384MB.jar" // File source
 const MD54MB = "778a5540263ef2df98016cef6ce3a94c"              // MD5 hash of 4MiB of the source (manually created)
 
-const COUNT = 4       // 4 peices
+const COUNT = 4       // 4 pieces
 const SIZE = 1.049e+6 // 1MiB
 
+// run some rudimentary tests on our GetFile methods
 func TestGetFile(t *testing.T) {
 	gf := NewGetFile(URL)
 

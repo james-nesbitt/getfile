@@ -50,7 +50,8 @@ func NewFileMeta_FromHeaders(headers map[string][]string) (FileMeta, error) {
  *
  * @TODO make this handle piece failure
  * @TODO make this consider memory usage with large pieces
- * @TODO this is not safe for cuncurrent execution
+ * @TODO this is not safe for concurrent execution
+ * @TODO this should have a lock to prevent concurrent retrival/sets
  */
 type FilePieces struct {
 	num    int
@@ -66,7 +67,7 @@ func NewFilePieces(n int) *FilePieces {
 }
 
 // Set a piece index value
-// @TODO this is not safe for cuncurrent execution
+// @TODO this needs to be safe for cuncurrent execution
 func (fp *FilePieces) Set(i int, b []byte) error {
 	if fp.pieces == nil {
 		fp.pieces = map[int][]byte{}
@@ -77,12 +78,13 @@ func (fp *FilePieces) Set(i int, b []byte) error {
 }
 
 // Get all of the pieces concatenated byte reader
-// @TODO this is not safe for cuncurrent execution
+// @TODO this needs to be safe for cuncurrent execution
 func (fp *FilePieces) All() (io.Reader, error) {
 	if fp.pieces == nil {
 		fp.pieces = map[int][]byte{}
 	}
 
+	// use a simple bytes.Buffer to concatenate all of the bytes.
 	body := bytes.NewBuffer([]byte{})
 
 	if len(fp.pieces) == 0 {

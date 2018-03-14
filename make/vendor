@@ -16,6 +16,8 @@ echo "  --> updating vendor dependencies [recursively]"
 
 # @HACK the build currently fails in a dockerized build without this
 (
+  go get github.com/urfave/cli 
+  go get github.com/sirupsen/logrus
   go get golang.org/x/crypto/ssh/terminal
 )
 
