@@ -1,2 +1,6 @@
+# vendoring and building results
+bin/
 src/vendor
+
+# dev tools
 .idea
