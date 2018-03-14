@@ -11,6 +11,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
+	"context"
+	"time"
 )
 
 var url string  // url (http) to the source file
@@ -21,6 +23,8 @@ var size int  // how big (in bytes) each piece should be
 
 var wd string // what path to download the file to
 
+var ctx context.Context // limiting context for running
+
 const (
 	TEST_URL  = "http://4ca5b8f6.bwtest-aws.pravala.com/384MB.jar"
 	TEST_NAME = "384.jar" // file name for downloaded files
@@ -29,6 +33,9 @@ const (
 // Init the program
 func init() {
 	wd, _ = os.Getwd() // put any downloaded files into the pwd
+
+	dur, _ := time.ParseDuration("10s")
+	ctx, _ = context.WithTimeout(context.Background(), dur)
 }
 
 // main exec function
@@ -74,7 +81,7 @@ func main() {
 			return errors.New("Missing url.  You have to pass a valid url to the command.")
 		}
 
-		return getfile(url, path.Join(wd, name), limit, size)
+		return getfile(ctx, url, path.Join(wd, name), limit, size)
 	}
 
 	// Run the cli app, catch any errors
@@ -84,12 +91,12 @@ func main() {
 }
 
 // Local handoff that uses the GetFile struct to perform the download, with a fair amount of logging output
-func getfile(url string, file string, limit int, size int) error {
+func getfile(ctx context.Context, url string, file string, limit int, size int) error {
 	log.Info("Starting: ", url)
 
 	gf := NewGetFile(url)
 
-	if pr, err := gf.Pieces(limit, size); err != nil {
+	if pr, err := gf.Pieces(ctx, limit, size); err != nil {
 		log.WithError(err).Error("Could not retrieve file pieces")
 		return err
 	} else if f, err := ioutil.TempFile(wd, "getfile"); err != nil {
