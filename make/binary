@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#
+# Build an executable binary
+#
+# This target uses 'go build' to build an executable
+# for the target platform, in the configured path.
+#
+
+BUILDTIME=$(date --rfc-3339 ns | sed -e 's/ /T/') &> /dev/null
+GITCOMMIT=$(git rev-parse --short HEAD)
+
+echo "  --> Building"
+
+mkdir -p "${BUILD_PATH}"
+
+
+(
+
+    export PKG="${GO_PKG}"
+
+    # Where to put the compiled binary
+    export BUILD_BINARY_PATH="${BUILD_PATH}/${GO_PKG}"
+
+    echo "     ---> building ${GO_TARGET} -> ${BUILD_BINARY_PATH}"
+
+    # Get rid of existing binary
+    #rm -f "${BUILD_BINARY_PATH}"
+
+    # Build cli binaries
+    go build \
+       -p 2 \
+       -v \
+       -ldflags="-w -X ${PKG}/version.GITCOMMIT=${GITCOMMIT} -X ${PKG}/version.BUILDTIME=${BUILDTIME} -X ${PKG}/version.SHOWWARNING=${SHOWWARNING}" \
+       -o "${BUILD_BINARY_PATH}" \
+       "./${GO_TARGET}"
+
+
+)
